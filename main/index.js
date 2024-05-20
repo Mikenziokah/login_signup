@@ -4,78 +4,73 @@ const collection = require("./config");
 const bcrypt = require('bcrypt');
 
 const app = express();
-
-// Middleware to parse incoming requests with JSON payloads
+// convert data into json format
 app.use(express.json());
-// Middleware to serve static files
-app.use(express.static("public"));
-// Middleware to parse URL-encoded bodies
+// Static file
+app.use(express.static("styles"));
+
 app.use(express.urlencoded({ extended: false }));
-// Setting EJS as the view engine
+//use EJS as the view engine
 app.set("view engine", "ejs");
 
-// Route to render login page
 app.get("/", (req, res) => {
     res.render("login");
 });
 
-// Route to render signup page
 app.get("/signup", (req, res) => {
     res.render("signup");
 });
 
 // Register User
 app.post("/signup", async (req, res) => {
-    try {
-        const { username, password } = req.body;
 
-        // Check if the username already exists in the database
-        const existingUser = await collection.findOne({ name: username });
-        if (existingUser) {
-            return res.status(400).send('User already exists. Please choose a different username.');
-        }
-
-        // Hash the password using bcrypt
-        const saltRounds = 10;
-        const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-        // Insert the new user with the hashed password into the database
-        const userdata = await collection.insertOne({ name: username, password: hashedPassword });
-        console.log(userdata);
-
-        res.status(201).send('User registered successfully');
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Internal Server Error');
+    const data = {
+        name: req.body.username,
+        password: req.body.password
     }
+
+    // Check if the username already exists in the database
+    const existingUser = await collection.findOne({ name: data.name });
+
+    if (existingUser) {
+        res.send('User already exists. Please choose a different username.');
+    } else {
+        // Hash the password using bcrypt
+        const saltRounds = 10; // Number of salt rounds for bcrypt
+        const hashedPassword = await bcrypt.hash(data.password, saltRounds);
+
+        data.password = hashedPassword; // Replace the original password with the hashed one
+
+        const userdata = await collection.insertMany(data);
+        console.log(userdata);
+    }
+
 });
 
 // Login user 
 app.post("/login", async (req, res) => {
     try {
-        const { username, password } = req.body;
-
-        // Find user by username
-        const user = await collection.findOne({ name: username });
-        if (!user) {
-            return res.status(400).send("Username not found");
+        const check = await collection.findOne({ name: req.body.username });
+        if (!check) {
+            res.send("User name cannot found")
         }
-
         // Compare the hashed password from the database with the plaintext password
-        const isPasswordMatch = await bcrypt.compare(password, user.password);
+        const isPasswordMatch = await bcrypt.compare(req.body.password, check.password);
         if (!isPasswordMatch) {
-            return res.status(400).send("Wrong Password");
+            res.send("wrong Password");
         }
-
-        res.render("home");
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+        else {
+            res.render("home");
+        }
+    }
+    catch {
+        res.send("wrong Details");
     }
 });
+
 
 // Define Port for Application
 const port = 5000;
 app.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
+    console.log(`Server listening on port ${port}`)
 });
