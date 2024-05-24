@@ -7,7 +7,7 @@ const app = express();
 // convert data into json format
 app.use(express.json());
 // Static file
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static("public"));
 
 app.use(express.urlencoded({ extended: false }));
 //use EJS as the view engine
