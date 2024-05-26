@@ -17,10 +17,10 @@ body {
     background-repeat: no-repeat
 }
 
-h1.centered {
-    text-align: center;
+h1 {
+    text-align: top;
     font-size: 2.5em;
-    color: #581845;
+    color: #8912C8;
     margin-bottom: 20px;
     font-weight: bold;
 }
