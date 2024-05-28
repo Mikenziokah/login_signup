@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const connect = mongoose.connect("mongodb://localhost:27017/Login-tut");
+const connect = mongoose.connect("mongodb://localhost:27017/Login-mike");
 
 // Check database connected or not
 connect.then(() => {

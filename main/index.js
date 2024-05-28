@@ -3,7 +3,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const session = require("express-session");
-const UserModel = require("./config"); // Assuming your Mongoose model is defined in config.js
+const UserModel = require("./config");
 
 const app = express();
 
@@ -18,7 +18,7 @@ app.use(
     secret: "20ad348d81eafea0653addd35199ff6775498e9a9fe292ed503a32bd7552e8b6",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // Set to true if using HTTPS
+    cookie: { secure: false }, // needs to be Set to true if using HTTPS
   })
 );
 
