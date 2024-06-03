@@ -18,7 +18,7 @@ app.use(
     secret: "20ad348d81eafea0653addd35199ff6775498e9a9fe292ed503a32bd7552e8b6",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false }, // needs to be Set to true if using HTTPS
+    cookie: { secure: false }, //  Set to true if using HTTPS
   })
 );
 
@@ -52,7 +52,7 @@ app.post("/signup", async (req, res) => {
         .send("User already exists. Please choose a different username.");
     }
 
-    // Validate password strength (simple example, customize as needed)
+    // Validate password strength
     if (password.length < 8) {
       return res
         .status(400)
